@@ -165,7 +165,6 @@ class TestPet:
         with allure.step("Проверка статуса ответа после удаления питомца"):
             assert response_2.status_code == 404, "Код ответа не совпал с ожидаемым"
 
-
     @pytest.mark.parametrize(
         "status, expected_status_code",
         [
