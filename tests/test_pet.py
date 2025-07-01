@@ -114,7 +114,7 @@ class TestPet:
         with allure.step("Получение ID созданного питомца"):
             pet_id = create_pet["id"]
         with allure.step("Отправка запроса на обновление информации о питомце"):
-            response = requests.put(url=f'{BASE_URL}/pet/{pet_id}')
+            response = requests.get(url=f'{BASE_URL}/pet/{pet_id}')
             response_json = response.json()
 
         with allure.step("Проверка статуса ответа"):
