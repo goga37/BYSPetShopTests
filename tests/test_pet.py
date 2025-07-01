@@ -165,7 +165,7 @@ class TestPet:
         with allure.step("Проверка статуса ответа после удаления питомца"):
             assert response_2.status_code == 404, "Код ответа не совпал с ожидаемым"
 
-    @allure.title("Получение списка питомцев по статусу")
+
     @pytest.mark.parametrize(
         "status, expected_status_code",
         [
@@ -176,6 +176,8 @@ class TestPet:
          ]
     )
     def test_get_pets_by_status(self, status, expected_status_code):
+        allure.dynamic.title(f"Получение списка питомцев по статусу: {status}")
+
         with allure.step(f"Отправка запроса на получение списков питомцев по статусу {status}"):
             response = requests.get(url=f'{BASE_URL}/pet/findByStatus', params={"status": status})
 
