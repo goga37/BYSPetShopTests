@@ -165,28 +165,33 @@ class TestPet:
         with allure.step("Проверка статуса ответа после удаления питомца"):
             assert response_2.status_code == 404, "Код ответа не совпал с ожидаемым"
 
-
+    # УСПЕШНЫЕ КЕЙСЫ
     @pytest.mark.parametrize(
-        "status, expected_status_code",
-        [
-            ("available", 200),
-            ("sold", 200),
-            ("pending", 200),
-            ("pendifewfewng", 400)
-         ]
+        "status",
+        ["available", "sold", "pending"]
     )
-    def test_get_pets_by_status(self, status, expected_status_code):
+    def test_get_pets_by_valid_status(self, status):
         allure.dynamic.title(f"Получение списка питомцев по статусу: {status}")
 
-        with allure.step(f"Отправка запроса на получение списков питомцев по статусу {status}"):
-            response = requests.get(url=f'{BASE_URL}/pet/findByStatus', params={"status": status})
+        with allure.step(f"Отправка запроса на получение питомцев по статусу '{status}'"):
+            response = requests.get(f"{BASE_URL}/pet/findByStatus", params={"status": status})
 
-        with allure.step("Проверка статуса ответа"):
-            assert response.status_code == expected_status_code, "Код ответа не совпал с ожидаемым"
+        with allure.step("Проверка, что код ответа 200"):
+            assert response.status_code == 200
 
-        if expected_status_code == 200:
-            with allure.step("Проверка, что тело ответа — список"):
-                assert isinstance(response.json(), list)
-        else:
-            with allure.step(f"Проверка статус-кода при передаче не существуещего {status}"):
-                assert response.status_code == 400, "Код не соответсвует ожидаемому"
+        with allure.step("Проверка, что тело ответа — список"):
+            assert isinstance(response.json(), list)
+
+    # НЕУСПЕШНЫЕ КЕЙСЫ
+    @pytest.mark.parametrize(
+        "status",
+        ["pendifewfewng", "", None]
+    )
+    def test_get_pets_by_invalid_status(self, status):
+        allure.dynamic.title(f"Негативный тест: передача некорректного статуса '{status}'")
+
+        with allure.step(f"Отправка запроса с некорректным статусом: '{status}'"):
+            response = requests.get(f"{BASE_URL}/pet/findByStatus", params={"status": status})
+
+        with allure.step("Проверка, что код ответа 400"):
+            assert response.status_code == 400, f"Ожидался код 400 при статусе '{status}', получен {response.status_code}"
